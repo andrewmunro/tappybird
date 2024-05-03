@@ -1,0 +1,337 @@
+[gd_scene load_steps=13 format=3 uid="uid://cuoqg5tbh421j"]
+
+[ext_resource type="PackedScene" uid="uid://bwonejb4i2elx" path="res://scenes/plane.tscn" id="1_4shx3"]
+[ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_8p8ap"]
+[ext_resource type="Texture2D" uid="uid://bfiggnp82xq2s" path="res://assets/background.png" id="2_jj2a2"]
+[ext_resource type="PackedScene" uid="uid://ey8f6uxplynu" path="res://scenes/ground.tscn" id="3_8cocf"]
+[ext_resource type="PackedScene" uid="uid://b06u3c7ldm7od" path="res://scenes/killzone.tscn" id="5_s2k1u"]
+[ext_resource type="Texture2D" uid="uid://cxoaqdyyvlrgy" path="res://assets/rockDown.png" id="6_06flm"]
+[ext_resource type="Texture2D" uid="uid://bo8ejd5xik3my" path="res://assets/rockGrass.png" id="7_lnqxv"]
+[ext_resource type="PackedScene" uid="uid://h6yj45cwq5tt" path="res://scenes/star.tscn" id="8_2udfs"]
+
+[sub_resource type="Animation" id="Animation_e1wfn"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1152, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_kemqn"]
+resource_name = "scroll"
+length = 6.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-2416, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_p2jh7"]
+resource_name = "start"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1152, 0), Vector2(0, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimationPlayer")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": ["scroll", -1, 1.0, false],
+"method": &"play"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qt4jf"]
+_data = {
+"RESET": SubResource("Animation_e1wfn"),
+"scroll": SubResource("Animation_kemqn"),
+"start": SubResource("Animation_p2jh7")
+}
+
+[node name="Game" type="Node2D"]
+
+[node name="GameManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("1_8p8ap")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+position_smoothing_enabled = true
+
+[node name="Background" type="Sprite2D" parent="Camera2D"]
+texture_repeat = 2
+position = Vector2(-5.72205e-06, 0)
+scale = Vector2(1.44, 1.35)
+texture = ExtResource("2_jj2a2")
+
+[node name="Plane" parent="." instance=ExtResource("1_4shx3")]
+position = Vector2(261, 243)
+
+[node name="score" type="Label" parent="Plane"]
+offset_left = -20.0
+offset_top = -95.0
+offset_right = 20.0
+offset_bottom = -45.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 36
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Ground" parent="." instance=ExtResource("3_8cocf")]
+position = Vector2(-42, 43)
+
+[node name="Ground2" parent="." instance=ExtResource("3_8cocf")]
+position = Vector2(1110, 43)
+
+[node name="Spikes" type="Node2D" parent="."]
+position = Vector2(1152, 0)
+
+[node name="Killzone" parent="Spikes" instance=ExtResource("5_s2k1u")]
+position = Vector2(2417, 396)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Spikes/Killzone"]
+position = Vector2(-2360, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone/CollisionPolygon2D"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Spikes/Killzone"]
+position = Vector2(-2360, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone/CollisionPolygon2D2"]
+texture = ExtResource("7_lnqxv")
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="Spikes/Killzone"]
+position = Vector2(-2020, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone/CollisionPolygon2D3"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="Spikes/Killzone"]
+position = Vector2(-2020, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone/CollisionPolygon2D4"]
+texture = ExtResource("7_lnqxv")
+
+[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="Spikes/Killzone"]
+position = Vector2(-1683.77, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone/CollisionPolygon2D5"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="Spikes/Killzone"]
+position = Vector2(-1683.77, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone/CollisionPolygon2D6"]
+texture = ExtResource("7_lnqxv")
+
+[node name="CollisionPolygon2D7" type="CollisionPolygon2D" parent="Spikes/Killzone"]
+position = Vector2(-1343.77, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone/CollisionPolygon2D7"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D8" type="CollisionPolygon2D" parent="Spikes/Killzone"]
+position = Vector2(-1343.77, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone/CollisionPolygon2D8"]
+texture = ExtResource("7_lnqxv")
+
+[node name="Killzone2" parent="Spikes" instance=ExtResource("5_s2k1u")]
+position = Vector2(3816, 396)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Spikes/Killzone2"]
+position = Vector2(-2360, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone2/CollisionPolygon2D"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Spikes/Killzone2"]
+position = Vector2(-2360, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone2/CollisionPolygon2D2"]
+texture = ExtResource("7_lnqxv")
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="Spikes/Killzone2"]
+position = Vector2(-2020, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone2/CollisionPolygon2D3"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="Spikes/Killzone2"]
+position = Vector2(-2020, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone2/CollisionPolygon2D4"]
+texture = ExtResource("7_lnqxv")
+
+[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="Spikes/Killzone2"]
+position = Vector2(-1683.77, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone2/CollisionPolygon2D5"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="Spikes/Killzone2"]
+position = Vector2(-1683.77, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone2/CollisionPolygon2D6"]
+texture = ExtResource("7_lnqxv")
+
+[node name="CollisionPolygon2D7" type="CollisionPolygon2D" parent="Spikes/Killzone2"]
+position = Vector2(-1343.77, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone2/CollisionPolygon2D7"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D8" type="CollisionPolygon2D" parent="Spikes/Killzone2"]
+position = Vector2(-1343.77, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone2/CollisionPolygon2D8"]
+texture = ExtResource("7_lnqxv")
+
+[node name="Killzone3" parent="Spikes" instance=ExtResource("5_s2k1u")]
+position = Vector2(5176, 396)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Spikes/Killzone3"]
+position = Vector2(-2360, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone3/CollisionPolygon2D"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Spikes/Killzone3"]
+position = Vector2(-2360, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone3/CollisionPolygon2D2"]
+texture = ExtResource("7_lnqxv")
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="Spikes/Killzone3"]
+position = Vector2(-2020, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone3/CollisionPolygon2D3"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="Spikes/Killzone3"]
+position = Vector2(-2020, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone3/CollisionPolygon2D4"]
+texture = ExtResource("7_lnqxv")
+
+[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="Spikes/Killzone3"]
+position = Vector2(-1683.77, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone3/CollisionPolygon2D5"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="Spikes/Killzone3"]
+position = Vector2(-1683.77, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone3/CollisionPolygon2D6"]
+texture = ExtResource("7_lnqxv")
+
+[node name="CollisionPolygon2D7" type="CollisionPolygon2D" parent="Spikes/Killzone3"]
+position = Vector2(-1343.77, -284)
+polygon = PackedVector2Array(54, -115.3, 54, -110.4, 53.9, -105.5, 52.2, -105.5, 15.1, 109.9, 6, 109.1, 6, 104, -51, -112.9, -51, -119.5, -46.2, -119.5)
+
+[node name="RockDown" type="Sprite2D" parent="Spikes/Killzone3/CollisionPolygon2D7"]
+texture = ExtResource("6_06flm")
+
+[node name="CollisionPolygon2D8" type="CollisionPolygon2D" parent="Spikes/Killzone3"]
+position = Vector2(-1343.77, 142)
+polygon = PackedVector2Array(54, 112.3, 54, 117.5, 47.9, 117.5, -53.1, 114.3, -52.9, 104.5, -50.8, 104.5, -26.9, 11.5, -24.7, 11.5, -17, -0.0999985, -17, -4.1, 6, -106.2, 6, -111.1, 15.1, -111.9)
+
+[node name="RockGrass" type="Sprite2D" parent="Spikes/Killzone3/CollisionPolygon2D8"]
+texture = ExtResource("7_lnqxv")
+
+[node name="stars" type="Node2D" parent="Spikes"]
+
+[node name="Star2" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(398, 326)
+
+[node name="Star3" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(744, 326)
+
+[node name="Star4" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(1088, 326)
+
+[node name="Star5" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(1472, 324)
+
+[node name="Star6" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(1808, 326)
+
+[node name="Star7" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(2144, 328)
+
+[node name="Star8" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(2480, 328)
+
+[node name="Star9" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(2824, 324)
+
+[node name="Star10" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(3160, 326)
+
+[node name="Star11" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(3496, 328)
+
+[node name="Star12" parent="Spikes/stars" instance=ExtResource("8_2udfs")]
+position = Vector2(3832, 328)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Spikes"]
+libraries = {
+"": SubResource("AnimationLibrary_qt4jf")
+}
+
+[connection signal="on_game_start" from="GameManager" to="Plane" method="_on_game_manager_on_game_start"]

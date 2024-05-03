@@ -1,0 +1,64 @@
+[gd_scene load_steps=6 format=3 uid="uid://ey8f6uxplynu"]
+
+[ext_resource type="Texture2D" uid="uid://cq4cqm8hqh1i5" path="res://assets/groundGrass.png" id="1_cy5hr"]
+[ext_resource type="PackedScene" uid="uid://b06u3c7ldm7od" path="res://scenes/killzone.tscn" id="1_jmpju"]
+
+[sub_resource type="Animation" id="Animation_n4opq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Killzone/CollisionPolygon2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(617.845, 556)]
+}
+
+[sub_resource type="Animation" id="Animation_ikkal"]
+resource_name = "scroll"
+length = 3.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Killzone/CollisionPolygon2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(617.845, 556), Vector2(-534, 556)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ye26f"]
+_data = {
+"RESET": SubResource("Animation_n4opq"),
+"scroll": SubResource("Animation_ikkal")
+}
+
+[node name="Ground" type="Node2D"]
+
+[node name="Killzone" parent="." instance=ExtResource("1_jmpju")]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Killzone"]
+position = Vector2(617.845, 556)
+scale = Vector2(1.42613, 1.48592)
+polygon = PackedVector2Array(343, -31.2, 359.4, -10.5, 360.5, -10.5, 401, -1.5, 401, 3.5, 402.2, 35.5, -401.6, 35.5, -404, 6.4, -404, 1.5, -398.2, 1.5, -367, -3.3, -367, 1.1, -361.3, 5.5, -355.8, 5.5, -313.6, 8.2, -270.9, -2.6, -247.2, -28.5, -229.2, -28.5, -149, -31.7, -149, -29, -95, -8.5, -56.4, -8.5, -31.4, -23.5, 37, -23.5, 37, -19.7, 68.8, 8.5, 107, 8.5, 130.1, 18.5, 166, 18.5, 195, -9.5, 206.3, -9.5, 232.5, -13.1, 253, -32.5, 261.8, -32.5, 313, -34.3, 313, -35.5, 343, -35.5)
+
+[node name="GroundGrass" type="Sprite2D" parent="Killzone/CollisionPolygon2D"]
+texture = ExtResource("1_cy5hr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Killzone"]
+root_node = NodePath("../..")
+libraries = {
+"": SubResource("AnimationLibrary_ye26f")
+}
+autoplay = "scroll"
+
+[connection signal="ready" from="." to="Killzone" method="_on_ground_ready"]
+[connection signal="ready" from="Killzone" to="Killzone" method="_on_ready"]
