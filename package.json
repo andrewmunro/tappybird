@@ -1,0 +1,20 @@
+{
+  "name": "tappyplane",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "predeploy": "cd build/web && curl -LO https://raw.githubusercontent.com/gzuidhof/coi-serviceworker/master/coi-serviceworker.js && sed -i \"3 i <script src='coi-serviceworker.js'></script>\" index.html",
+    "deploy": "npx gh-pages deploy --dist build/web"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewmunro/tappyplane.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrewmunro/tappyplane/issues"
+  },
+  "homepage": "https://github.com/andrewmunro/tappyplane#readme"
+}
